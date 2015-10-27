@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mailbox-item xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LinkedInConnectionRequest.xsd">
+  <recipients>
+    <recipient>
+      <person path="">
+        <first-name>first-name</first-name>
+        <last-name>last-name</last-name>
+      </person>
+    </recipient>
+  </recipients>
+  <subject>subject</subject>
+  <body>body</body>
+  <item-content>
+    <invitation-request>
+      <connect-type>connect-type</connect-type>
+    </invitation-request>
+  </item-content>
+</mailbox-item>

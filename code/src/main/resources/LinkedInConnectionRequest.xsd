@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0">
+
+	<xs:element name="mailbox-item">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="recipients" maxOccurs="1" />
+				<xs:element name="subject" type="xs:string" maxOccurs="1" />
+				<xs:element name="body" type="xs:string" maxOccurs="1" />
+				<xs:element ref="item-content" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="recipients">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="recipient" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="recipient">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="person" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="person">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="first-name" type="xs:string" maxOccurs="1" />
+			<xs:element name="last-name" type="xs:string" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="path" type="xs:string" use="required"></xs:attribute>
+	</xs:complexType>
+	</xs:element>
+
+	<xs:element name="item-content">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="invitation-request" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="invitation-request">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="connect-type" type="xs:string" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

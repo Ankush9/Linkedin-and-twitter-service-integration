@@ -1,0 +1,1 @@
+{"status":false,"radius":null,"geoFenceEnabled":false,"towerTrackingEnabled":false,"heartBeatInterval":null,"geoFenceServices":null,"productParamList":null,"statusMessage":"Authentication failed... Redirecting to Login","userMasterDTO":null}

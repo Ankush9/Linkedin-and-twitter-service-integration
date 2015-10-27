@@ -1,0 +1,9 @@
+ClearCase CopyAreaDB|4
+EIP_VOB\BFS_Doc\bajaj-fos-new\messaging\messaging-rs-war\src\main\webapp\WEB-INF
+2
+5
+12:spring-context.xml|1|147072dd9a8|1619|875d66a4|652fc86eb68111e3800a0002f650c84c|0
+7:web.xml|1|147072dda59|732|862b6ef8|56d9472c8cd611e380130002f650c84c|0
+1e:spring-integration-context.xml|1|147072dd8f1|121c8|bf919907|da069c2cd05b11e380290002f650c84c|0
+1a:mvc-dispatcher-servlet.xml|1|147072dd98f|51c|77c51c|be74e89c760111e380130002f650c84c|0
+13:spring-security.xml|1|147072dd8c4|ca5|1c9671d4|f4b0c2f48f3811e380070002f650c84c|0

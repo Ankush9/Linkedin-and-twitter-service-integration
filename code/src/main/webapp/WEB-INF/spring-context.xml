@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!--context:annotation-config / -->
+	<!--context:component-scan base-package="com.atos.service" / -->
+
+	<aop:aspectj-autoproxy />
+
+	 <util:properties id="social"
+		location="classpath:social-network.properties" />
+
+	<!--Service : Datasource - Start
+	bean id="serviceDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	Shaiju: Changed the data source to tomcat-jdbc. The tomcat-jdbc.jar 
+		exist in tomcat/lib folder. Copy postgresql-9.1-901.jdbc4.jar in tomcat/lib 
+		and remove the jar from webapps\messagingrs\WEB-INF\lib folder. This is required 
+		or else DataSource will not be able to load postgres driver
+	<bean id="serviceDataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+		<property name="driverClassName" value="#{bfs.service_jdbc_driver}" />
+		<property name="url" value="#{bfs.service_jdbc_url}" />
+		<property name="username" value="#{bfs.service_jdbc_username}" />
+		<property name="password" value="#{bfs.service_jdbc_password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="SELECT 1" />
+		Shaiju: START Additional properties
+		<property name="validationInterval" value="30000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="timeBetweenEvictionRunsMillis" value="5000" />
+		<property name="maxWait" value="30000" />
+		<property name="removeAbandonedTimeout" value="180" />
+		<property name="removeAbandoned" value="true" />
+		<property name="logAbandoned" value="false" />
+		<property name="minEvictableIdleTimeMillis" value="30000" />
+		<property name="jmxEnabled" value="true" />
+		<property name="initialSize" value="2" />
+		<property name="maxActive" value="10" />
+		<property name="minIdle" value="2" />
+		Shaiju: END Additional properties
+	</bean>
+	Service : Datasource - End
+
+	Bajaj : Datasource and Entity Manager - Start
+	bean id="bajajDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	Shaiju: Changed the data source to tomcat-jdbc
+	<bean id="bajajDataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+		<property name="driverClassName" value="#{bfs.bajaj_jdbc_driver}" />
+		<property name="url" value="#{bfs.bajaj_jdbc_url}" />
+		<property name="username" value="#{bfs.bajaj_jdbc_username}" />
+		<property name="password" value="#{bfs.bajaj_jdbc_password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="SELECT 1" />
+		Shaiju: START Additional properties
+		<property name="validationInterval" value="30000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="timeBetweenEvictionRunsMillis" value="5000" />
+		<property name="maxWait" value="30000" />
+		<property name="removeAbandonedTimeout" value="180" />
+		<property name="removeAbandoned" value="true" />
+		<property name="logAbandoned" value="false" />
+		<property name="minEvictableIdleTimeMillis" value="30000" />
+		<property name="jmxEnabled" value="true" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="50" />
+		<property name="minIdle" value="10" />
+		Shaiju: END Additional properties
+	</bean>
+
+	<bean id="bajajEMF"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="bajaj-dao" />
+		<property name="dataSource" ref="bajajDataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<qualifier value="bajajEMF" />
+	</bean>
+
+	Add Transaction support
+	<bean id="bajajTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="bajajEMF" />
+		<qualifier value="bajaj" />
+	</bean>
+
+	<alias name="bajajTransactionManager" alias="transactionManager" />
+
+	Use @Transaction annotations for managing transactions
+	<tx:annotation-driven transaction-manager="bajajTransactionManager" />
+	
+
+	<jpa:repositories base-package="com.atos.service.dao.bajaj.repository"
+		entity-manager-factory-ref="bajajEMF" />
+	
+	Bajaj : Datasource and Entity Manager - End -->
+</beans>

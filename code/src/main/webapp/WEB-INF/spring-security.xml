@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<security:http pattern="login.htm" security="none" />
+
+	<security:http use-expressions='true'>
+		<security:intercept-url pattern="/loginerror.jsp" access="permitAll" />
+		<security:intercept-url pattern="/j_spring_security_check" access="permitAll" />
+		<security:intercept-url pattern="/authenticateReturnConfig" access="permitAll" />
+		<security:intercept-url pattern="/recordattendance/markattendance" access="permitAll" />
+		<security:intercept-url pattern="/leadmanagement/getAllocatedLeadsForDMA" access="permitAll" />
+		<security:intercept-url pattern="/leadmanagement/allocateFALeadToDMA" access="permitAll" />
+		<security:intercept-url pattern="/leadmanagement/updateLeadDetails" access="permitAll" />
+		<security:intercept-url pattern="/ddconfiguration/getDDConfiguration" access="permitAll" />
+		<security:intercept-url pattern="/usermanagement/usermonthlytarget" access="permitAll" />
+		<security:intercept-url pattern="/heartbeat" access="permitAll" />
+		<security:intercept-url pattern="/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/**" access="isAuthenticated()" />
+		<security:form-login login-page="/loginerror.jsp"
+			authentication-success-handler-ref="authenticationSuccessHandler"
+			authentication-failure-handler-ref="authenticationFailureHandler" />
+		<security:logout logout-url="/j_spring_security_logout" />
+		<security:remember-me services-ref="rememberMeServices"
+			key="testKeyBFSRS" />
+		<security:session-management>
+		    <!--  <security:concurrency-control max-sessions="1"/>  -->
+		</security:session-management>
+	</security:http>
+
+	<bean id="rememberMeServices"
+		class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
+		<property name="tokenRepository" ref="tokenRepository" />
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="key" value="testKeyBFSRS" />
+	</bean>
+
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider
+			ref="authenticationProvider" />
+	</security:authentication-manager>
+
+	<bean id="authenticationProvider"
+		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService" />
+	</bean>
+	<bean id="tokenRepository" class="com.atos.service.dao.bajaj.repository.TokenRepository"></bean>
+	<bean id="userDetailsService" class="com.atos.service.bajaj.UserTokenServiceImpl"></bean>
+
+	<bean id="authenticationSuccessHandler"
+		class="com.atos.security.handler.SpringAuthenticationSuccessHandler" />
+
+	<bean id="authenticationFailureHandler"
+		class="com.atos.security.handler.SpringAuthenticationFailureHandler" />
+</beans>

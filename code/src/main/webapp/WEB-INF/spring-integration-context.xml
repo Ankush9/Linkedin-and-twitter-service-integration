@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-mail="http://www.springframework.org/schema/integration/mail"
+	xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+	xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-2.1.xsd
+        http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+        http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+        http://www.springframework.org/schema/integration/mail http://www.springframework.org/schema/integration/mail/spring-integration-mail-2.1.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+        http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+        http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream-2.1.xsd
+        http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- LinkedIn Authorization Service Starts -->
+	<int:channel id="linkedinAuthorizationReqChannel" />
+	<int:channel id="linkedinAuthorizationResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinAuthorizationInboundGateway"
+		request-channel="linkedinAuthorizationReqChannel" reply-channel="linkedinAuthorizationResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedinAuthorize"
+		request-payload-type="java.lang.String" mapped-response-headers="Content-Type"/>
+
+	<int:json-to-object-transformer id="jsonTolinkedinauthorizationConverter"
+		input-channel="linkedinAuthorizationReqChannel" output-channel="linkedinAuthorizationActivatorInChannel"
+		type="com.atos.socialnetwork.dto.AuthenticationInitialDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinAuthorizationActivatorOutChannelJsonConverter" input-channel="linkedinAuthorizationResChannel" />
+
+	<int:service-activator input-channel="linkedinAuthorizationActivatorInChannel"
+		method="linkedInAuthorization">
+		<bean class="com.atos.socialnetwork.service.activator.AuthenticationServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Authorization Service Ends -->
+	
+	<!-- LinkedIn Access Token Service Starts -->
+	<int:channel id="linkedinAccessTokenReqChannel" />
+	<int:channel id="linkedinAccessTokenResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinAccessTokenInboundGateway"
+		request-channel="linkedinAccessTokenReqChannel" reply-channel="linkedinAccessTokenResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedinAccessToken"
+		request-payload-type="java.lang.String" mapped-response-headers="Content-Type"/>
+
+	<int:json-to-object-transformer id="jsonTolinkedinAccessTokenConverter"
+		input-channel="linkedinAccessTokenReqChannel" output-channel="linkedinAccessTokenActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInAccessTokenRequestDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinAccessTokenActivatorOutChannelJsonConverter" input-channel="linkedinAccessTokenResChannel" />
+
+	<int:service-activator input-channel="linkedinAccessTokenActivatorInChannel"
+		method="linkedInAccessToken">
+		<bean class="com.atos.socialnetwork.service.activator.AuthenticationServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Access Token Service Ends -->
+	
+	<!-- LinkedIn Basic Profile Service Starts -->
+	<int:channel id="linkedinBasicProfileReqChannel" />
+	<int:channel id="linkedinBasicProfileResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinBasicProfileInboundGateway"
+		request-channel="linkedinBasicProfileReqChannel" reply-channel="linkedinBasicProfileResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/getlinkedInBasicProfile"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinBasicProfileConverter"
+		input-channel="linkedinBasicProfileReqChannel" output-channel="linkedinBasicProfileActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinBasicProfileActivatorOutChannelJsonConverter" input-channel="linkedinBasicProfileResChannel" />
+
+	<int:service-activator input-channel="linkedinBasicProfileActivatorInChannel"
+		method="linkedInBasicProfile">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Basic Profile Service Ends -->
+	
+	<!-- LinkedIn Basic Resource Connection Service Starts -->
+	<int:channel id="linkedinBasicConnectionResourceReqChannel" />
+	<int:channel id="linkedinBasicConnectionResourceResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinBasicConnectionResourceInboundGateway"
+		request-channel="linkedinBasicConnectionResourceReqChannel" reply-channel="linkedinBasicConnectionResourceResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/getlinkedInBasicConnectionResource"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinBasicConnectionResourceConverter"
+		input-channel="linkedinBasicConnectionResourceReqChannel" output-channel="linkedinBasicConnectionResourceActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinBasicConnectionResourceActivatorOutChannelJsonConverter" input-channel="linkedinBasicConnectionResourceResChannel" />
+
+	<int:service-activator input-channel="linkedinBasicConnectionResourceActivatorInChannel"
+		method="linkedInBasicResourceConnection">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Basic Resource Connection Service Ends -->
+	
+	<!-- LinkedIn Basic Network Update Service Starts -->
+	<int:channel id="linkedinBasicNetworkUpdateReqChannel" />
+	<int:channel id="linkedinBasicNetworkUpdateResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinBasicNetworkUpdateInboundGateway"
+		request-channel="linkedinBasicNetworkUpdateReqChannel" reply-channel="linkedinBasicNetworkUpdateResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/getlinkedInBasicNetworkUpdates"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinBasicNetworkUpdateConverter"
+		input-channel="linkedinBasicNetworkUpdateReqChannel" output-channel="linkedinBasicNetworkUpdateActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinBasicNetworkUpdateActivatorOutChannelJsonConverter" input-channel="linkedinBasicNetworkUpdateResChannel" />
+
+	<int:service-activator input-channel="linkedinBasicNetworkUpdateActivatorInChannel"
+		method="linkedInNetworkConnectUpdates">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Basic Network Update Service Ends -->
+	
+	<!-- LinkedIn Search People By ID Service Starts -->
+	<int:channel id="linkedinSearchPeopleByIdReqChannel" />
+	<int:channel id="linkedinSearchPeopleByIdResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinSearchPeopleByIdInboundGateway"
+		request-channel="linkedinSearchPeopleByIdReqChannel" reply-channel="linkedinSearchPeopleByIdResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedInSearchPeopleById"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinSearchPeopleByIdConverter"
+		input-channel="linkedinSearchPeopleByIdReqChannel" output-channel="linkedinSearchPeopleByIdActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinSearchPeopleByIdActivatorOutChannelJsonConverter" input-channel="linkedinSearchPeopleByIdResChannel" />
+
+	<int:service-activator input-channel="linkedinSearchPeopleByIdActivatorInChannel"
+		method="linkedInPeopleById">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Search People By ID Service Ends -->
+	
+	<!-- LinkedIn Fetch Group Membership Service Starts -->
+	<int:channel id="linkedinfetchGroupMembershipReqChannel" />
+	<int:channel id="linkedinfetchGroupMembershipResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinfetchGroupMembershipInboundGateway"
+		request-channel="linkedinfetchGroupMembershipReqChannel" reply-channel="linkedinfetchGroupMembershipResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedInFetchGroupMembership"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinfetchGroupMembershipConverter"
+		input-channel="linkedinfetchGroupMembershipReqChannel" output-channel="linkedinfetchGroupMembershipActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinfetchGroupMembershipActivatorOutChannelJsonConverter" input-channel="linkedinfetchGroupMembershipResChannel" />
+
+	<int:service-activator input-channel="linkedinfetchGroupMembershipActivatorInChannel"
+		method="linkedInFetchGroupMembership">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Fetch Group Membership Service Ends -->
+	
+	<!-- LinkedIn Post Of Groups Service Starts -->
+	<int:channel id="linkedinPostOfGroupsReqChannel" />
+	<int:channel id="linkedinPostOfGroupsResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinPostOfGroupsInboundGateway"
+		request-channel="linkedinPostOfGroupsReqChannel" reply-channel="linkedinPostOfGroupsResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedInPostOfGroups"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinPostOfGroupsConverter"
+		input-channel="linkedinPostOfGroupsReqChannel" output-channel="linkedinPostOfGroupsActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinPostOfGroupsActivatorOutChannelJsonConverter" input-channel="linkedinPostOfGroupsResChannel" />
+
+	<int:service-activator input-channel="linkedinPostOfGroupsActivatorInChannel"
+		method="linkedInPostsOfGroup">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Post Of Groups Service Ends -->
+	
+	<!-- LinkedIn Send Invitation Service Starts -->
+	<int:channel id="linkedinSendInvitationReqChannel" />
+	<int:channel id="linkedinSendInvitationResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinSendInvitationInboundGateway"
+		request-channel="linkedinSendInvitationReqChannel" reply-channel="linkedinSendInvitationResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedInSendInvitation"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinSendInvitationConverter"
+		input-channel="linkedinSendInvitationReqChannel" output-channel="linkedinSendInvitationActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinSendInvitationActivatorOutChannelJsonConverter" input-channel="linkedinSendInvitationResChannel" />
+
+	<int:service-activator input-channel="linkedinSendInvitationActivatorInChannel"
+		method="linkedInSendInvitationRequest">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn Send Invitation Service Ends -->
+	
+	<!-- LinkedIn People Search Service Starts -->
+	<int:channel id="linkedinPeopleSearchReqChannel" />
+	<int:channel id="linkedinPeopleSearchResChannel" />
+	
+	<int-http:inbound-gateway id="linkedinPeopleSearchInboundGateway"
+		request-channel="linkedinPeopleSearchReqChannel" reply-channel="linkedinPeopleSearchResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/linkedInPeopleSearch"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTolinkedinPeopleSearchConverter"
+		input-channel="linkedinPeopleSearchReqChannel" output-channel="linkedinPeopleSearchActivatorInChannel"
+		type="com.atos.socialnetwork.dto.LinkedInServiceAccessDTO" />
+
+	<int:object-to-json-transformer
+		id="linkedinPeopleSearchActivatorOutChannelJsonConverter" input-channel="linkedinPeopleSearchResChannel" />
+
+	<int:service-activator input-channel="linkedinPeopleSearchActivatorInChannel"
+		method="searchPeopleByFirstAndLastName">
+		<bean class="com.atos.socialnetwork.service.activator.LinkedInServiceActivator" />
+	</int:service-activator>
+	<!-- LinkedIn People Search Service Ends -->
+	
+	<!-- Twitter Authentication Service Starts -->
+	<int:channel id="twitterAuthenticationReqChannel" />
+	<int:channel id="twitterAuthenticationResChannel" />
+	
+	<int-http:inbound-gateway id="twitterAuthenticationInboundGateway"
+		request-channel="twitterAuthenticationReqChannel" reply-channel="twitterAuthenticationResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/twitterAuthentication"
+		request-payload-type="java.lang.String" />
+
+	<int:json-to-object-transformer id="jsonTotwitterAuthenticationConverter"
+		input-channel="twitterAuthenticationReqChannel" output-channel="twitterAuthenticationActivatorInChannel"
+		type="com.atos.socialnetwork.dto.AuthenticationInitialDTO" />
+
+	<int:object-to-json-transformer
+		id="twitterAuthenticationActivatorOutChannelJsonConverter" input-channel="twitterAuthenticationResChannel" />
+
+	<int:service-activator input-channel="twitterAuthenticationActivatorInChannel"
+		method="twitterAuthentication">
+		<bean class="com.atos.socialnetwork.service.activator.AuthenticationServiceActivator" />
+	</int:service-activator>
+	<!-- Twitter Authentication Service Ends -->
+	
+	<!-- Twitter Post By Hashtag Service Starts -->
+	<int:channel id="twitterPostByHashtagReqChannel" />
+	<int:channel id="twitterPostByHashtagResChannel" />
+	
+	<int-http:inbound-gateway id="twitterPostByHashtagInboundGateway"
+		request-channel="twitterPostByHashtagReqChannel" reply-channel="twitterPostByHashtagResChannel"
+		supported-methods="GET, POST" reply-timeout="5000" path="/twitterPostByHashtag"
+		request-payload-type="java.lang.String" mapped-response-headers="Content-Type"/>
+
+	<int:json-to-object-transformer id="jsonTotwitterPostByHashtagConverter"
+		input-channel="twitterPostByHashtagReqChannel" output-channel="twitterPostByHashtagActivatorInChannel"
+		type="com.atos.socialnetwork.dto.TwitterSearchTweetRequestDTO" />
+
+	<int:object-to-json-transformer
+		id="twitterPostByHashtagActivatorOutChannelJsonConverter" input-channel="twitterPostByHashtagResChannel" />
+
+	<int:service-activator input-channel="twitterPostByHashtagActivatorInChannel"
+		method="searchTwitterByHashTag">
+		<bean class="com.atos.socialnetwork.service.activator.TwitterServiceActivator" />
+	</int:service-activator>
+	<!-- Twitter Post By Hashtag Service Ends -->
+</beans>
